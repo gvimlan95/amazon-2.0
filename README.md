@@ -16,4 +16,8 @@ To run the program using netlify.
 
 ### 4. Screenshot
 
+![Alt text](/amazon-2.0.png?raw=true)
+
 ### 5. Live preview
+
+(https://amazon-2-0-jade.vercel.app/)
