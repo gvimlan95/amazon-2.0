@@ -2,16 +2,34 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { StarIcon } from '@heroicons/react/solid';
 import Currency from 'react-currency-formatter';
+import { useDispatch } from 'react-redux';
+import { addToBasket } from '../slices/basketSlice';
 
 const MAX_RATING = 5;
 const MIN_RATING = 1;
 
-function Product({ title, price, description, category, image }) {
+function Product({ id, title, price, description, category, image }) {
+	const dispatch = useDispatch();
+
 	const [rating] = useState(
 		Math.floor(Math.random() * (MAX_RATING - MIN_RATING) + MIN_RATING)
 	);
 
-	const [hasPrime] = useState(Math.floor(Math.random()) < 0.5);
+	const [hasPrime] = useState(Boolean(Math.random() < 0.5));
+
+	const addItemToBasket = () => {
+		const products = {
+			id,
+			title,
+			price,
+			rating,
+			description,
+			category,
+			image,
+			hasPrime,
+		};
+		dispatch(addToBasket(products));
+	};
 
 	return (
 		<div className="relative flex flex-col m-5 bg-white z-30 p-10">
@@ -20,13 +38,16 @@ function Product({ title, price, description, category, image }) {
 			</p>
 			<Image src={image} height={200} width={200} objectFit="contain" />
 			<h4 className="my-3">{title}</h4>
-			<div className="flex">
-				{Array(rating)
-					.fill()
-					.map((_, i) => (
-						<StarIcon key={i} className="h-5 text-yellow-500" />
-					))}
-			</div>
+			{rating && (
+				<div className="flex">
+					{Array(rating)
+						.fill()
+						.map((_, i) => (
+							<StarIcon key={i} className="h-5 text-yellow-500" />
+						))}
+				</div>
+			)}
+
 			<p className="text-xs my-2 line-clamp-2">{description}</p>
 			<div className="mb-5">
 				<Currency quantity={price} currency="GBP" />
@@ -37,7 +58,9 @@ function Product({ title, price, description, category, image }) {
 					<p className="text-xs text-gray-500">FREE Next-Day Delivery</p>
 				</div>
 			)}
-			<button className="mt-auto button">Add To Basket</button>
+			<button onClick={addItemToBasket} className="mt-auto button">
+				Add To Basket
+			</button>
 		</div>
 	);
 }
